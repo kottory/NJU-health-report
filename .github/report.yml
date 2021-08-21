@@ -1,0 +1,31 @@
+name: Health Report Action
+
+on:
+  push:
+    branches:
+      - master
+  
+  schedule:
+    - cron: '0 12,21 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set Up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run Script
+        env:
+          NJU_USERNAME: ${{ secrets.username }}
+          NJU_PASSWORD: ${{ secrets.password }}
+          CURR_LOCATION: ${{ secrets.location }}
+        run: |
+          python run.py
