@@ -20,24 +20,24 @@ if __name__ == "__main__":
     password = os.getenv('NJU_PASSWORD')
     curr_location = os.getenv('CURR_LOCATION')
 
-    log.info('Trying to login...')
+    log.info('尝试登录...')
 
     if auth.needCaptcha(username):
-        log.error("Captcha is not yet supported, please log in manually.")
+        log.error("统一认证平台需要输入验证码才能继续，请手动登录后再重试")
         os._exit(1)
 
     ok = auth.login(username, password)
     if not ok:
-        log.error("Login Failed.")
+        log.error("登录失败")
         os._exit(1)
 
-    log.info('Login Success')
+    log.info('登录成功！')
 
     for count in range(10):
-        log.info('Trying to get jkdk list...')
+        log.info('尝试获取打卡列表信息...')
         r = auth.session.get(URL_JKDK_LIST)
         if r.status_code != 200:
-            log.info('Getting jkdk list failed!')
+            log.error('获取失败，一分钟后再次尝试...')
             time.sleep(60)
             continue
 
@@ -47,13 +47,12 @@ if __name__ == "__main__":
             data = "?WID={}&IS_TWZC=1&CURR_LOCATION={}&JRSKMYS=1&IS_HAS_JKQK=1&JZRJRSKMYS=1".format(
                 wid, curr_location)
             url = URL_JKDK_APPLY + data
-            log.info('Applying...')
+            log.info('正在打卡')
             auth.session.get(url)
             time.sleep(1)
         else:
-            log.info("Apply Success!")
-            log.info("Your location is {}".format(dk_info["CURR_LOCATION"]))
+            log.info("今日已打卡！")
             os._exit(0)
 
-    log.error("Apply Failed!")
+    log.error("打卡失败，请尝试手动打卡")
     os._exit(-1)
