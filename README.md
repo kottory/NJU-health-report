@@ -22,5 +22,11 @@
 5. 项目默认是在 12:00 与 21:00（UTC 时间）自动打卡，可以根据需要修改 `.github/workflows/report.yml` 中 `cron` 项。
 6. 建议设置 GitHub Actions 通知为 `Send notifications for failed workflows only` 以接收构建失败的通知。这通常是默认设置项。
 
+当 Action 启动之后，可以通过进入 Summary 来查看具体的记录。一次正常的打卡显示效果如下：
+
+![](img/2.png)
+
+若构建失败，请遵循 Log 中的提示进行相应操作。
+
 ## 待办
 - [ ] 自动识别验证码
