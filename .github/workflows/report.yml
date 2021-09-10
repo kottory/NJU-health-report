@@ -1,6 +1,7 @@
 name: Health Report Action
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
