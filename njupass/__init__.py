@@ -5,10 +5,7 @@ PACKAGES:
     NjuUiaAuth
     NjuEliteAuth
 """
-from Crypto.Cipher import AES
-import random
-import base64
-import string
+import execjs
 import requests
 import re
 import os
@@ -60,18 +57,9 @@ class NjuUiaAuth:
         ATTRIBUTES:
             password(str): Original password
         """
-        random_iv = ''.join(random.sample((string.ascii_letters + string.digits) * 10, 16))
-        random_str = ''.join(random.sample((string.ascii_letters + string.digits) * 10, 64))
-
-        data = random_str + password
-        key = self.pwdDefaultEncryptSalt.encode("utf-8")
-        iv = random_iv.encode("utf-8")
-
-        bs = AES.block_size
-        pad = lambda s: s + (bs - len(s) % bs) * chr(bs - len(s) % bs)
-        cipher = AES.new(key, AES.MODE_CBC, iv)
-        data = cipher.encrypt(pad(data).encode("utf-8"))
-        return base64.b64encode(data).decode("utf-8")
+        with open(os.path.join(os.path.dirname(__file__), 'resources/encrypt.js')) as f:
+            ctx = execjs.compile(f.read())
+        return ctx.call('encryptAES', password, self.pwdDefaultEncryptSalt)
 
     def needCaptcha(self, username):
         url = 'https://authserver.nju.edu.cn/authserver/needCaptcha.html?username={}'.format(
