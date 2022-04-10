@@ -19,6 +19,7 @@ if __name__ == "__main__":
     username = os.getenv('NJU_USERNAME')
     password = os.getenv('NJU_PASSWORD')
     curr_location = os.getenv('CURR_LOCATION')
+    hs_time = os.getenv('LAST_HS_TIME')
 
     if username == '' or password == '' or curr_location == '':
         log.error('账户、密码或地理位置信息为空！请检查是否正确地设置了 SECRET 项（GitHub Action）。')
@@ -48,8 +49,8 @@ if __name__ == "__main__":
         dk_info = json.loads(r.text)['data'][0]
         if dk_info['TBZT'] == "0":
             wid = dk_info['WID']
-            data = "?WID={}&IS_TWZC=1&CURR_LOCATION={}&JRSKMYS=1&IS_HAS_JKQK=1&JZRJRSKMYS=1".format(
-                wid, curr_location)
+            data = "?WID={}&IS_TWZC=1&CURR_LOCATION={}&JRSKMYS=1&IS_HAS_JKQK=1&JZRJRSKMYS=1&SFZJLN=0&ZJHSJCSJ=2022-{}".format(
+                wid, curr_location, hs_time)
             url = URL_JKDK_APPLY + data
             log.info('正在打卡')
             auth.session.get(url)
