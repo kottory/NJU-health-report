@@ -47,7 +47,7 @@ if __name__ == "__main__":
             continue
 
         dk_info = json.loads(r.text)['data'][0]
-        if dk_info['TBZT'] != "0":
+        if dk_info['TBZT'] == "0":
             wid = dk_info['WID']
             data = "?WID={}&IS_TWZC=1&CURR_LOCATION={}&JRSKMYS=1&IS_HAS_JKQK=1&JZRJRSKMYS=1&SFZJLN=0&ZJHSJCSJ=2022-{}".format(
                 wid, curr_location, hs_time)
