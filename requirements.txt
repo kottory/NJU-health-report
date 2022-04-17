@@ -2,3 +2,4 @@ requests
 PyExecJS
 python-dotenv
 pytz
+ddddocr
