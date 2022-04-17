@@ -10,7 +10,7 @@ import requests
 import re
 import os
 from io import BytesIO
-import ocr
+import njupass.ocr
 import time
 
 URL_NJU_UIA_AUTH = 'https://authserver.nju.edu.cn/authserver/login'
