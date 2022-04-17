@@ -6,7 +6,7 @@ import time
 import logging
 import datetime
 from pytz import timezone
-from ocr import detect
+from njupass.ocr import detect
 
 URL_JKDK_LIST = 'http://ehallapp.nju.edu.cn/xgfw/sys/yqfxmrjkdkappnju/apply/getApplyInfoList.do'
 URL_JKDK_APPLY = 'http://ehallapp.nju.edu.cn/xgfw/sys/yqfxmrjkdkappnju/apply/saveApplyInfos.do'
@@ -41,18 +41,11 @@ if __name__ == "__main__":
     log.info('尝试登录...')
 
     if auth.needCaptcha(username):
+        log.info("统一认证平台需要输入验证码才能继续，尝试识别验证码...")
 
-        log.error("统一认证平台需要输入验证码才能继续，尝试识别验证码")
-        captchaText = detect(auth.getCaptchaCode())
-        if captchaText != None:
-            log.info("验证码为： "+captchaText)
-        else:
-            log.error("验证码识别失败")
-            os._exit(1)
-
-    ok = auth.login(username, password, captchaResponse=captchaText)
+    ok = auth.tryLogin(username, password)
     if not ok:
-        log.error("登录失败，可能是密码错误或网络问题。")
+        log.error("登录失败。可能是用户名或密码错误，或是验证码无法识别。")
         os._exit(1)
 
     log.info('登录成功！')

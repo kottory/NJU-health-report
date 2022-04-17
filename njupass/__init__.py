@@ -10,6 +10,8 @@ import requests
 import re
 import os
 from io import BytesIO
+import ocr
+import time
 
 URL_NJU_UIA_AUTH = 'https://authserver.nju.edu.cn/authserver/login'
 URL_NJU_ELITE_LOGIN = 'http://elite.nju.edu.cn/jiaowu/login.do'
@@ -24,7 +26,7 @@ class NjuUiaAuth:
     def __init__(self):
         self.session = requests.Session()
         self.session.headers.update({
-           'User-Agent': "Mozilla/5.0 (Linux; Android 11; M2006J10C Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.141 Mobile Safari/537.36  cpdaily/8.2.7 wisedu/8.2.7})"
+            'User-Agent': "Mozilla/5.0 (Linux; Android 11; M2006J10C Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.141 Mobile Safari/537.36  cpdaily/8.2.7 wisedu/8.2.7})"
         })
 
         r = self.session.get(URL_NJU_UIA_AUTH)
@@ -69,6 +71,24 @@ class NjuUiaAuth:
             return True
         else:
             return False
+
+    def tryLogin(self, username, password):
+        """
+        DESCRIPTION:
+            Try to login using OCR to bypass captcha.
+            Return true if login success, false otherwise
+        """
+        try_times = 3
+        for _ in range(try_times):
+            captchaText = ""
+            if self.needCaptcha(username):
+                captchaText = ocr.detect(self.getCaptchaCode())
+            ok = self.login(username, password, captchaResponse=captchaText)
+            if ok:
+                return True
+            time.sleep(5)
+
+        return False
 
     def login(self, username, password, captchaResponse=""):
         """
