@@ -37,7 +37,7 @@ class NjuUiaAuth:
         self.rmShown = re.search(
             r'<input type="hidden" name="rmShown" value="(.*)"', r.text).group(1)
         self.pwdDefaultEncryptSalt = re.search(
-            r'<input type="hidden" id="pwdDefaultEncryptSalt" value="(.*)"', r.text).group(1)
+            r'var pwdDefaultEncryptSalt = "(.*)"', r.text).group(1)
 
     def getCaptchaCode(self):
         """
