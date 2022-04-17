@@ -40,12 +40,20 @@ if __name__ == "__main__":
     log.info('尝试登录...')
 
     if auth.needCaptcha(username):
-        log.error("统一认证平台需要输入验证码才能继续，请手动登录后再重试")
-        os._exit(1)
+        log.info("统一认证平台需要输入验证码")
+        # CAPTCHA REQUIRED
+        import muggle_ocr
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+        captcha_image = auth.session.get("https://authserver.nju.edu.cn/authserver/captcha.html")
+        sdk = muggle_ocr.SDK(model_type = muggle_ocr.ModelType.Captcha)
+        captcha_text = sdk.predict(image_bytes = captcha_image.content)
+        log.info("验证码：" + captcha_text)
+        ok = auth.login(username, password, captcha_text)
+    else:
+        ok = auth.login(username, password)
 
-    ok = auth.login(username, password)
     if not ok:
-        log.error("登录失败，可能是密码错误或网络问题。")
+        log.error("登录失败，可能是密码错误，验证码识别错误或网络问题。")
         os._exit(1)
 
     log.info('登录成功！')

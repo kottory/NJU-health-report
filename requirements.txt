@@ -2,3 +2,8 @@ requests
 PyExecJS
 python-dotenv
 pytz
+opencv_python
+tensorflow
+numpy
+Pillow
+PyYAML
