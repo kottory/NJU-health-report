@@ -10,15 +10,20 @@ URL_JKDK_APPLY = 'http://ehallapp.nju.edu.cn/xgfw/sys/yqfxmrjkdkappnju/apply/sav
 URL_JDKD_INDEX = 'http://ehallapp.nju.edu.cn/xgfw/sys/mrjkdkappnju/index.html'
 
 
-def get_zjhs_time(method='YESTERDAY'):
+def get_zjhs_time(method, last_id):
     """获取最近核酸时间"""
     today = datetime.datetime.now(timezone('Asia/Shanghai'))
-    yesterday = today + datetime.timedelta(-1)
     if method == 'YESTERDAY':
-        return yesterday.strftime("%Y-%m-%d %-H")
+        PCR_date = today + datetime.timedelta(-1)
+    elif method == 'REGULAR':
+        delta = ((datetime.date.today() - datetime.date(2022, 4, 3)).days - last_id) % 5
+        PCR_date = today + datetime.timedelta(-delta)
+    else:
+        PCR_date = today
+    return PCR_date.strftime("%Y-%m-%d %-H")
 
 
-def apply(curr_location, logger, auth: NjuUiaAuth, covidTestMethod='YESTERDAY', force=False):
+def apply(curr_location, logger, auth: NjuUiaAuth, covidTestMethod, last_id, force=False):
     """
     完成一次健康打卡
     :param `covidTestMethod`: 最近核酸时间的方案
@@ -40,7 +45,7 @@ def apply(curr_location, logger, auth: NjuUiaAuth, covidTestMethod='YESTERDAY', 
             'WID': wid,
             'IS_TWZC': 1,  # 是否体温正常
             'CURR_LOCATION': curr_location,  # 位置
-            'ZJHSJCSJ': get_zjhs_time(covidTestMethod),  # 最近核酸检测时间
+            'ZJHSJCSJ': get_zjhs_time(covidTestMethod, last_id),  # 最近核酸检测时间
             'JRSKMYS': 1,  # 今日苏康码颜色
             'IS_HAS_JKQK': 1,  # 健康情况
             'JZRJRSKMYS': 1,  # 居住人今日苏康码颜色
