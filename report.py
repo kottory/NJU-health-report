@@ -49,6 +49,7 @@ def apply(curr_location, logger, auth: NjuUiaAuth, covidTestMethod='YESTERDAY', 
         headers = {
             'referer': URL_JDKD_INDEX,  # required since 2022/4/20
             "X-Requested-With": "com.wisedu.cpdaily.nju",
+            "User-Agent": "Mozilla/5.0 (Linux; Android 11; M2006J10C Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/92.0.4515.131 Mobile Safari/537.36 cpdaily/8.2.7 wisedu/8.2.7"
         }
         url = URL_JKDK_APPLY + '?' + urlencode(param)
 

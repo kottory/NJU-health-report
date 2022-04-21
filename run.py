@@ -1,8 +1,6 @@
 from njupass import NjuUiaAuth
 from dotenv import load_dotenv
 import os
-import json
-import time
 import logging
 from report import apply
 
@@ -43,16 +41,16 @@ if __name__ == "__main__":
     if method == '':
         method = 'YESTERDAY'
 
-    if username == '' or password == '' or curr_location == '':
+    if username == None or password == None or curr_location == None:
         log.error('账户、密码或地理位置信息为空！请检查是否正确地设置了 SECRET 项（GitHub Action）。')
         os._exit(1)
 
     # try to login
     ok = login(username, password, log, auth)
     if not ok:
-        os.exit(-1)
+        os._exit(-1)
 
     # start reporting
     ok = apply(curr_location, log, auth)
     if not ok:
-        os.exit(-1)
+        os._exit(-1)
