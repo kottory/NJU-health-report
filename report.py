@@ -16,7 +16,7 @@ def get_zjhs_time(method, last_id):
     if method == 'YESTERDAY':
         PCR_date = today + datetime.timedelta(-1)
     elif method == 'REGULAR':
-        delta = ((datetime.date.today() - datetime.date(2022, 4, 3)).days - last_id) % 5
+        delta = ((datetime.date.today() - datetime.date(2022, 4, 4)).days - last_id) % 5
         PCR_date = today + datetime.timedelta(-delta)
     else:
         PCR_date = today
